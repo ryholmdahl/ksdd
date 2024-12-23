@@ -27,6 +27,35 @@ def insert_comment_section(index_path):
   </head>'''
     
     content = content.replace('</head>', css_styles)
+       
+    # Insert script to handle Unity canvas before the existing script
+    unity_handler = '''
+    <script>
+      // Override the default Unity canvas setup
+      const originalCreateUnityInstance = window.createUnityInstance;
+      window.createUnityInstance = (...args) => {
+        return originalCreateUnityInstance(...args).then(instance => {
+          const canvas = document.querySelector("#unity-canvas");
+          const textarea = document.querySelector("#comment-text");
+          
+          textarea.addEventListener('focus', () => {
+            canvas.style.pointerEvents = 'none';
+            canvas.style.display = 'none';
+            setTimeout(() => canvas.style.display = 'block', 100);
+          });
+          
+          textarea.addEventListener('blur', () => {
+            canvas.style.pointerEvents = 'auto';
+          });
+          
+          return instance;
+        });
+      };
+    </script>
+    <script>'''
+    
+    content = content.replace('<script>', unity_handler, 1)
+
     
     comment_section = '''
       <div id="comment-section" style="max-width: 960px; width: 100%; margin: 20px auto; padding: 20px;">
