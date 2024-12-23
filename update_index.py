@@ -20,6 +20,9 @@ def insert_comment_section(index_path):
         margin: 0;
         padding: 20px 0;
       }
+      #comment-text:focus {
+        z-index: 1000;
+      }
     </style>
   </head>'''
     
@@ -28,10 +31,36 @@ def insert_comment_section(index_path):
     comment_section = '''
       <div id="comment-section" style="max-width: 960px; width: 100%; margin: 20px auto; padding: 20px;">
         <h3>Leave a Comment</h3>
-        <textarea id="comment-text" style="width: 100%; height: 100px; margin-bottom: 10px;"></textarea>
+        <textarea id="comment-text" style="width: 100%; height: 100px; margin-bottom: 10px;" 
+                  onfocus="pauseUnityInput()" onblur="resumeUnityInput()"></textarea>
         <button onclick="submitComment()" style="padding: 10px 20px;">Submit Comment</button>
       </div>
       <script>
+        let unityInstance = null;
+        
+        // Store the original createUnityInstance call
+        const originalCreateUnityInstance = createUnityInstance;
+        createUnityInstance = function(canvas, config, onProgress) {
+            return originalCreateUnityInstance(canvas, config, onProgress).then((instance) => {
+                unityInstance = instance;
+                return instance;
+            });
+        };
+
+        function pauseUnityInput() {
+            if (unityInstance) {
+                const canvas = document.querySelector("#unity-canvas");
+                canvas.setAttribute('tabindex', '-1');
+            }
+        }
+
+        function resumeUnityInput() {
+            if (unityInstance) {
+                const canvas = document.querySelector("#unity-canvas");
+                canvas.setAttribute('tabindex', '1');
+            }
+        }
+
         function submitComment() {
           const comment = document.getElementById('comment-text').value;
           if (comment.trim() === '') {
