@@ -6,8 +6,27 @@ def insert_comment_section(index_path):
     if 'id="comment-section"' in content:
         return
     
+    # First, add CSS to the head section
+    css_styles = '''
+    <style>
+      #unity-container.unity-desktop {
+        margin-bottom: 20px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px 0;
+      }
+    </style>
+  </head>'''
+    
+    content = content.replace('</head>', css_styles)
+    
     comment_section = '''
-      <div id="comment-section" style="max-width: 960px; margin: 20px auto; padding: 20px;">
+      <div id="comment-section" style="max-width: 960px; width: 100%; margin: 20px auto; padding: 20px;">
         <h3>Leave a Comment</h3>
         <textarea id="comment-text" style="width: 100%; height: 100px; margin-bottom: 10px;"></textarea>
         <button onclick="submitComment()" style="padding: 10px 20px;">Submit Comment</button>
