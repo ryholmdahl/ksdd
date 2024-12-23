@@ -121,7 +121,24 @@
             };
 
       document.body.appendChild(script);
-
     </script>
-  </body>
+  
+    <div id="comment-section" style="max-width: 960px; margin: 20px auto; padding: 20px;">
+      <h3>Leave a Comment</h3>
+        <textarea id="comment-text" style="width: 100%; height: 100px; margin-bottom: 10px;"></textarea>
+        <button onclick="submitComment()" style="padding: 10px 20px;">Submit Comment</button>
+      </div>
+      <script>
+        function submitComment() {
+          const comment = document.getElementById('comment-text').value;
+          if (comment.trim() === '') {
+            alert('Please enter a comment');
+            return;
+          }
+          const subject = encodeURIComponent('Game Feedback');
+          const body = encodeURIComponent(comment);
+          window.location.href = `mailto:your.email@example.com?subject=${subject}&body=${body}`;
+        }
+      </script>
+    </body>
 </html>
